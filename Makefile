@@ -25,6 +25,7 @@ run:
 	cd "$(BASE)/src" && docker run \
 		--name "$(CONTAINER)" \
 		-p 2022:22 \
+		-v "$(BASE)/srv:/srv" \
 		-i -t -d \
 		"$(CONTAINER)"
 	docker ps
@@ -33,7 +34,7 @@ run:
 reset:
 	docker stop "$(CONTAINER)" $(DOCKER_MACHINE)
 	docker rm -f $(DOCKER_MACHINE)
-	docker rmi -f "$(CONTAINER)" $(DOCKER_MACHINE)
+	docker rmi -f "$(CONTAINER)"
 
 tar:
 	cd "$(BASE)/../" && tar --exclude="./$(DIRNAME)/env" -czvf $(DIRNAME)-$(NOW).tgz ./$(DIRNAME)
