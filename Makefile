@@ -14,15 +14,25 @@ export PYTHONUNBUFFERED := 1
 
 
 build:
-	cd "$(BASE)/src" && docker build -t $(CONTAINER) .
+	cd "$(BASE)/src" && docker build \
+		-t $(CONTAINER) \
+		--rm=true \
+		.
 
 run:
 	# __$(shell date +'%Y-%m-%d_T%H-%M-%S')
 	cd "$(BASE)/src" && docker run \
 		--name "$(CONTAINER)" \
 		-p 2022:22 \
-		-i -t \
+		-i -t -d \
 		"$(CONTAINER)"
+	docker ps
+
+# http://sosedoff.com/2013/12/17/cleanup-docker-containers-and-images.html
+reset:
+	docker stop $(docker ps -a -q)
+	docker rm -f $(docker ps -a -q)
+	docker rmi -f $(docker images -a -q)
 
 tar:
 	cd "$(BASE)/../" && tar --exclude="./$(DIRNAME)/env" -czvf $(DIRNAME)-$(NOW).tgz ./$(DIRNAME)
