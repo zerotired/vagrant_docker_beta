@@ -1,6 +1,7 @@
 # pansen docker `Makefile`
 
 CONTAINER := amb_jessie
+DOCKER_MACHINE := $(shell docker ps -a -q)
 
 .DEFAULT_GOAL := all
 
@@ -30,9 +31,9 @@ run:
 
 # http://sosedoff.com/2013/12/17/cleanup-docker-containers-and-images.html
 reset:
-	docker stop $(docker ps -a -q)
-	docker rm -f $(docker ps -a -q)
-	docker rmi -f $(docker images -a -q)
+	docker stop "$(CONTAINER)" $(DOCKER_MACHINE)
+	docker rm -f $(DOCKER_MACHINE)
+	docker rmi -f "$(CONTAINER)" $(DOCKER_MACHINE)
 
 tar:
 	cd "$(BASE)/../" && tar --exclude="./$(DIRNAME)/env" -czvf $(DIRNAME)-$(NOW).tgz ./$(DIRNAME)
