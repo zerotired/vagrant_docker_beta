@@ -2,8 +2,7 @@ FROM debian:jessie
 MAINTAINER amb
 
 RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y openssh-server daemontools python2.7 net-tools sudo
+RUN apt-get install -y openssh-server daemontools python2.7 net-tools sudo vim
 RUN cd /usr/bin && ln -s python2.7 python
 
 RUN mkdir /var/run/sshd
