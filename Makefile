@@ -1,6 +1,9 @@
 # pansen docker `Makefile`
+#
+# https://github.com/wsargent/docker-cheat-sheet
 
-CONTAINER := amb_jessie
+IMAGE := zt/vagrant
+CONTAINER := vagrant_container
 DOCKER_MACHINE := $(shell docker ps -a -q)
 
 .DEFAULT_GOAL := all
@@ -15,28 +18,33 @@ export PYTHONUNBUFFERED := 1
 
 
 build:
+	# creates image from Dockerfile
 	cd "$(BASE)/src" && docker build \
-		-t $(CONTAINER) \
+		-t "$(IMAGE)" \
 		--rm=true \
 		.
 
-run:
+create:
+	# creates a container without starting it
 	# __$(shell date +'%Y-%m-%d_T%H-%M-%S')
-	cd "$(BASE)/src" && docker run \
+	cd "$(BASE)/src" && docker create \
 		--name "$(CONTAINER)" \
 		--privileged \
+		--cpuset-cpus="0,1" \
+		--memory="3g" \
+		--cap-add SYS_ADMIN \
 		-p 2022:6022 \
 		-p 2023:22 \
 		-v "$(BASE)/srv:/srv" \
-		-i -t -d \
-		"$(CONTAINER)"
-	docker ps
+		-i -t \
+		"$(IMAGE):latest"
+
 
 # http://sosedoff.com/2013/12/17/cleanup-docker-containers-and-images.html
 reset:
 	docker stop "$(CONTAINER)" $(DOCKER_MACHINE)
 	docker rm -f $(DOCKER_MACHINE)
-	docker rmi -f "$(CONTAINER)"
+	docker rmi -f "$(IMAGE)"
 
 ssh.docker:
 	ssh vagrant@127.0.0.1 -o "Port 2022" \

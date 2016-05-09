@@ -3,28 +3,28 @@
 ## Purpose
 
 Working with *Vagrant* on non-linux systems is painful since all "shared
-folder" options feel slow in some way. On linux, using *vagrant-lxc* as 
-*Vagrant* provider, you can use native `bind` mounts, which are fast 
+folder" options feel slow in some way. On linux, using *vagrant-lxc* as
+*Vagrant* provider, you can use native `bind` mounts, which are fast
 as they share the filesystem directly.
- 
+
 *Docker Beta* for Mac provides some improved shared filesystem, which is
 faster than `rsync`, *NFS*, etc.
 
-The idea is to create a docker container, having a shared directory to 
-the host, which then will be shared again to the *Vagrant* box via `bind` 
+The idea is to create a docker container, having a shared directory to
+the host, which then will be shared again to the *Vagrant* box via `bind`
 mounts (using *vagrant-lxc*).
 
- 
+
 ##  Status
-- the shared mount works taking advantage of *Docker Beta*s shared 
+- the shared mount works taking advantage of *Docker Beta*s shared
   filesystem and the `bind` mount of the nested *Vagrant* box, having
   the same filesystem shared. all contents of `srv/` are shared into
   the docker container and similar to the nested *Vagrant* box.
-- *Vagrant* box creation fails as the `lxc-attach` command for the 
-  network device does not directly apply. 
-  this can be fixed manually. 
-- the *Vagrant* box DNS setup is broken after boot. 
-  this can be fixed manually. 
+- *Vagrant* box creation fails as the `lxc-attach` command for the
+  network device does not directly apply.
+  this can be fixed manually.
+- the *Vagrant* box DNS setup is broken after boot.
+  this can be fixed manually.
 
 
 ##  Howto
@@ -33,10 +33,18 @@ mounts (using *vagrant-lxc*).
 
 Install [Docker Beta](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/)
 
+Prepare the Container once:
+
 ```
 make build
-make run
-make ssh.docker 
+make create
+```
+
+Then start it and connect to it:
+
+```
+docker start vagrant_container
+make ssh.docker
 ```
 
 ### In the Docker Container
@@ -62,10 +70,10 @@ sudo /usr/bin/env lxc-attach \
 ```
 Active Internet connections (only servers)
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      5718/sshd       
-tcp        0      0 0.0.0.0:6022            0.0.0.0:*               LISTEN      7/sshd          
-tcp6       0      0 :::22                   :::*                    LISTEN      5718/sshd       
-tcp6       0      0 :::6022                 :::*                    LISTEN      7/sshd          
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      5718/sshd
+tcp        0      0 0.0.0.0:6022            0.0.0.0:*               LISTEN      7/sshd
+tcp6       0      0 :::22                   :::*                    LISTEN      5718/sshd
+tcp6       0      0 :::6022                 :::*                    LISTEN      7/sshd
 ```
 
 You could now call `vagrant up` again and this would finish successfully.
@@ -86,7 +94,7 @@ sudo sh -c "echo 'nameserver 8.8.4.4' >> /etc/resolv.conf"
 sudo dhclient -r eth0
 ```
 
-then all things work smoothly :) 
+then all things work smoothly :)
 
 ## Issues
 
