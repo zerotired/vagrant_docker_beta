@@ -38,8 +38,18 @@ reset:
 	docker rm -f $(DOCKER_MACHINE)
 	docker rmi -f "$(CONTAINER)"
 
+ssh.docker:
+	ssh vagrant@127.0.0.1 -o "Port 2022" \
+		-o "IdentityFile $(BASE)/src/ssh/.vagrant.d/insecure_private_key" \
+		-o "UserKnownHostsFile /dev/null" \
+		-o "StrictHostKeyChecking no"
+
+ssh.vagrant:
+	ssh vagrant@127.0.0.1 -o "Port 2023" \
+		-o "IdentityFile $(BASE)/src/ssh/.vagrant.d/insecure_private_key" \
+		-o "UserKnownHostsFile /dev/null" \
+		-o "StrictHostKeyChecking no"
+
 tar:
 	cd "$(BASE)/../" && tar --exclude="./$(DIRNAME)/env" -czvf $(DIRNAME)-$(NOW).tgz ./$(DIRNAME)
 	cd "$(BASE)" && ls -lahtr "$(BASE)/../$(DIRNAME)-"* | tail -n1
-
-

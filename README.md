@@ -75,14 +75,14 @@ You could now call `vagrant up` again and this would finish successfully.
 Connect to this box from your host via
 
 ```
-ssh vagrant@127.0.0.1 -o "Port 2023"
+make ssh.vagrant
 ```
 
 First we need to hack the Nameserver:
 
 ```
-echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
-echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+sudo sh -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf"
+sudo sh -c "echo 'nameserver 8.8.4.4' >> /etc/resolv.conf"
 sudo dhclient -r eth0
 ```
 
