@@ -40,7 +40,7 @@ make ssh.docker
 ```
 
 ### In the Docker Container
-(where you just connected via `ssh vagrant@127.0.0.1 -o "Port 2022"`)
+(where you just connected via `make ssh.docker`)
 
 ```
 vagrant up
