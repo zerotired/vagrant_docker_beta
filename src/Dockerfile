@@ -25,6 +25,7 @@ RUN echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr
 RUN cat /root/.ssh/authorized_keys > /home/vagrant/.ssh/authorized_keys
 RUN chmod 0600 /root/.ssh/authorized_keys
 RUN chmod 0600 /home/vagrant/.ssh/authorized_keys
+COPY ssh/.vagrant.d/insecure_private_key /home/vagrant/.ssh/id_rsa
 RUN chown -R vagrant:vagrant /home/vagrant/.ssh
 RUN ln -sfn /srv/Vagrantfile /home/vagrant/
 
