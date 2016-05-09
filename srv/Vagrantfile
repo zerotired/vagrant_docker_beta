@@ -1,0 +1,55 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION="2"
+
+Vagrant.require_version '>= 1.8.1'
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # this file only works with `lxc`
+  ENV['VAGRANT_DEFAULT_PROVIDER'] = 'lxc'
+
+  # disable synced folders
+  # http://superuser.com/questions/756758/is-it-possible-to-disable-default-vagrant-synced-folder
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.boot_timeout = 10
+
+  # by default, boxes contain the key from here: https://github.com/mitchellh/vagrant/tree/master/keys
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = [
+    "~/.vagrant.d/insecure_private_key"
+  ]
+  config.ssh.forward_agent = true
+
+
+  config.vm.box = "fgrehm/trusty64-lxc"
+
+  # override the default ssh forwarding @see https://github.com/mitchellh/vagrant/issues/3232
+  config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
+  config.vm.network :forwarded_port, guest: 22, host: 2226, auto_correct: true
+
+
+  # TODO amb: no idea why this does not work for ``accelerate``.
+  # bug report is here: https://github.com/ansible/ansible/issues/11212
+  # config.vm.network :forwarded_port, guest: 5095, host: 5095, protocol: 'tcp', auto_correct: false, id: "ansible_accelerate"
+
+
+  config.vm.provider :lxc do |lxc, override|
+      lxc.container_name = "cbdev"
+
+      # won't work in docker on mac
+      # lxc.customize 'cgroup.memory.limit_in_bytes', '4096M'
+      # lxc.customize 'cgroup.cpuset.cpus', '2'
+
+      # default: `dir`
+      lxc.backingstore = 'dir'
+      # don't use this option. otherwise the bind mount won't work
+      # lxc.backingstore_option '--dir', Dir.pwd + '/../../var/lxc/' + config.vm.box
+
+      # lxc.customize 'mount.entry', Dir.pwd + '/ /var/lib/lxc/cbdev/rootfs/bound none bind,create=dir 0 0'
+      lxc.customize 'mount.entry', '/srv /var/lib/lxc/cbdev/rootfs/srv none bind,create=dir 0 0'
+  end
+
+end

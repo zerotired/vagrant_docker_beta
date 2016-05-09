@@ -24,7 +24,9 @@ run:
 	# __$(shell date +'%Y-%m-%d_T%H-%M-%S')
 	cd "$(BASE)/src" && docker run \
 		--name "$(CONTAINER)" \
-		-p 2022:22 \
+		--privileged \
+		-p 2022:6022 \
+		-p 2023:22 \
 		-v "$(BASE)/srv:/srv" \
 		-i -t -d \
 		"$(CONTAINER)"
