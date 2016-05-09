@@ -36,7 +36,7 @@ Install [Docker Beta](https://blog.docker.com/2016/03/docker-for-mac-windows-bet
 ```
 make build
 make run
-ssh vagrant@127.0.0.1 -o "Port 2022"
+make ssh.docker 
 ```
 
 ### In the Docker Container
@@ -51,7 +51,7 @@ To workaround this, you need to run this command ...
 
 ```
 sudo /usr/bin/env lxc-attach \
-    --logfile=/var/log/lxc-cbdev.log --logpriority=DEBUG \ 
+    --logfile=/var/log/lxc-cbdev.log --logpriority=DEBUG \
     --name cbdev --namespaces 'NETWORK|MOUNT' -- \
         /sbin/ip -4 addr show scope global eth0  \
     && sudo netstat -ntpl
